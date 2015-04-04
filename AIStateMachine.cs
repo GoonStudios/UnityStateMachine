@@ -12,6 +12,9 @@ namespace Goon.AI
         {
             StateMachineEditor.LaunchEditor(this);
         }
+
+        [HideInInspector]
+        public bool compressed = false;
         #endif
 
         public List<AIState> states;
@@ -66,7 +69,7 @@ namespace Goon.AI
 
                 currentState = targetState;
             }
-            else if (currentState.action != null && actionQueue.Count <= 1)
+            else if (currentState.action != null && actionQueue.Count == 0)
             {
                 actionQueue.Enqueue(currentState.action);
             }
@@ -86,12 +89,12 @@ namespace Goon.AI
                 }
             }
 
-            if (!currentAction.isComplete())
+            if (!currentAction.IsComplete())
             {
                 currentAction.Perform();
             }
 
-            if (currentAction.isComplete())
+            if (currentAction.IsComplete())
             {
                 currentAction.Reset();
                 currentAction = null;

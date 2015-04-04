@@ -42,6 +42,12 @@ namespace Goon.AI
 
         private void OnGUI()
         {
+            if (stateMachine == null)
+            {
+                Close();
+                return;
+            }
+
             states = new List<AIState>(gameObject.GetComponentsInChildren<AIState>());
             transitions = new List<AITransition>(gameObject.GetComponentsInChildren<AITransition>());
 
@@ -388,12 +394,26 @@ namespace Goon.AI
 
         private void CreateState()
         {
-            GameObject go = new GameObject("State");
-            go.transform.parent = gameObject.transform;
-            go.transform.localPosition = Vector3.zero;
+            GameObject go;
+
+            if (!stateMachine.compressed)
+            {
+                go = new GameObject("State");
+                go.transform.parent = gameObject.transform;
+                go.transform.localPosition = Vector3.zero;
+            }
+            else
+            {
+                go = gameObject;
+            }
 
             AIState state = go.AddComponent<AIState>();
             state.nodePos = mousePos;
+
+            if (stateMachine.states == null)
+            {
+                stateMachine.states = new List<AIState>();
+            }
             stateMachine.states.Add(state);
 
             if (stateMachine.states.Count == 1)
@@ -406,9 +426,18 @@ namespace Goon.AI
 
         private void CreateTransition()
         {
-            GameObject go = new GameObject("Transition");
-            go.transform.parent = gameObject.transform;
-            go.transform.localPosition = Vector3.zero;
+            GameObject go;
+
+            if (!stateMachine.compressed)
+            {
+                go = new GameObject("Transition");
+                go.transform.parent = gameObject.transform;
+                go.transform.localPosition = Vector3.zero;
+            }
+            else
+            {
+                go = gameObject;
+            }
 
             AITransition transition = go.AddComponent<AITransition>();
             transition.nodePos = mousePos;
